@@ -3,6 +3,7 @@ package com.abuzdin.builder4j;
 public class TestBean {
 
     private String stringField;
+    private int intField;
 
     public String getStringField() {
         return stringField;
@@ -10,5 +11,13 @@ public class TestBean {
 
     public void setStringField(String stringField) {
         this.stringField = stringField;
+    }
+
+    public int getIntField() {
+        return intField;
+    }
+
+    public void setIntField(int intField) {
+        this.intField = intField;
     }
 }

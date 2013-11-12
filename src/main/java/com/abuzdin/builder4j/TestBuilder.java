@@ -2,22 +2,25 @@ package com.abuzdin.builder4j;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BuilderFor {
+public class TestBuilder<T> {
 
-    private final Class clazz;
+    private final Class<T> clazz;
     private Map<String, Object> values = new HashMap<String, Object>();
 
-    public <T> BuilderFor(Class<T> clazz) {
+    public static <T> TestBuilder<T> forBean(Class<T> clazz) {
+        return new TestBuilder<T>(clazz);
+    }
+
+    private TestBuilder(Class<T> clazz) {
         this.clazz = clazz;
     }
 
-    public <T> T build() {
+    public T build() {
         try {
-            Object o = clazz.newInstance();
+            T o = clazz.newInstance();
             setValues(o);
 
             return (T) o;
@@ -26,7 +29,7 @@ public class BuilderFor {
         }
     }
 
-    public BuilderFor with(String fieldName, Object value) {
+    public TestBuilder<T> with(String fieldName, Object value) {
         values.put(fieldName, value);
         return this;
     }
