@@ -1,5 +1,6 @@
 package com.abuzdin.builder4j;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.allOf;
@@ -20,8 +21,9 @@ public class TestBuilderTest {
 
     @Test
     public void shouldSetStringFieldWithSetter() {
-        TestBean bean = TestBuilder.forBean(TestBean.class)
-                .with("stringField", "Hello World")
+        TestBean proxy = TestBuilder.proxyBean(TestBean.class);
+        TestBean bean = TestBuilder.forBean(TestBean.class, proxy)
+                .with(proxy.getStringField(), "Hello World")
                 .build();
 
         assertThat(bean, hasProperty("stringField", is("Hello World")));
