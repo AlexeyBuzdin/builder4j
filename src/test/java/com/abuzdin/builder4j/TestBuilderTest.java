@@ -1,6 +1,5 @@
 package com.abuzdin.builder4j;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.allOf;
@@ -31,9 +30,10 @@ public class TestBuilderTest {
 
     @Test
     public void shouldSetTwoFieldsInChain() {
-        TestBean bean = TestBuilder.forBean(TestBean.class)
-                .with("stringField", "Hello World")
-                .with("intField", 1)
+        TestBean proxy = TestBuilder.proxyBean(TestBean.class);
+        TestBean bean = TestBuilder.forBean(TestBean.class, proxy)
+                .with(proxy.getStringField(), "Hello World")
+                .with(proxy.getIntField(), 1)
                 .build();
 
         assertThat(bean, allOf(

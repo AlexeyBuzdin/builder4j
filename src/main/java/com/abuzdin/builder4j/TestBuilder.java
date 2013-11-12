@@ -1,11 +1,7 @@
 package com.abuzdin.builder4j;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.mockito.MockSettings;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +24,20 @@ public class TestBuilder<T> {
         return builder;
     }
 
+    public static <T> T proxyBean(Class<T> clazz) {
+        try {
+            T instance = clazz.newInstance();
+            BeanProxyHandler answer = new BeanProxyHandler(instance);
+
+            return mock(clazz, withSettings()
+                    .defaultAnswer(answer)
+                    .extraInterfaces(HasProxyHandler.class)
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private TestBuilder(Class<T> clazz) {
         this.clazz = clazz;
     }
@@ -43,11 +53,21 @@ public class TestBuilder<T> {
         }
     }
 
-    public TestBuilder<T> with(String fieldName, Object value) {
+    public TestBuilder<T> with(Object field, Object value) {
+        String fieldName;
         if (proxyHandler != null) {
             fieldName = proxyHandler.getLastAccessedField();
+        } else {
+            fieldName = field.toString();
         }
+
         values.put(fieldName, value);
+        return this;
+    }
+
+    public TestBuilder<T> register(T proxy) {
+        HasProxyHandler hasProxyHandler = (HasProxyHandler) proxy;
+        this.proxyHandler = hasProxyHandler.getProxyHandler();
         return this;
     }
 
@@ -59,25 +79,5 @@ public class TestBuilder<T> {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static <T> T proxyBean(Class<T> clazz) {
-        try {
-            T instance = clazz.newInstance();
-            BeanProxyHandler answer = new BeanProxyHandler(instance);
-
-            return mock(clazz, withSettings()
-                                    .defaultAnswer(answer)
-                                    .extraInterfaces(HasProxyHandler.class)
-            );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public TestBuilder<T> register(T proxy) {
-        HasProxyHandler hasProxyHandler = (HasProxyHandler) proxy;
-        this.proxyHandler = hasProxyHandler.getProxyHandler();
-        return this;
     }
 }
