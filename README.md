@@ -19,7 +19,7 @@ public void shouldSetStringField() {
 #### Creating beans using getter methods on dynamic proxy
 ```
 @InjectProxy
-TestBean bean;
+MyBean proxy;
 
 @Before
 public void setUp() {
@@ -28,8 +28,8 @@ public void setUp() {
 
 @Test
 public void shouldSetStringField() {
-    bean = TestBuilder.forBean(MyBean.class, bean)
-            .with(bean.getStringField(), "Hello World")
+    MyBean bean = TestBuilder.forBean(MyBean.class, proxy)
+            .with(proxy.getStringField(), "Hello World")
             .build();
 
     assertThat(bean, hasProperty("stringField", is("Hello World")));
