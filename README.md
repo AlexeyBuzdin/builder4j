@@ -8,35 +8,32 @@ Builder4J enchants your test with generic reflective builders.
 
 #### Using field names
 ```
-    @Test
-    public void shouldSetStringFieldWithSetter() {
-        TestBean bean = TestBuilder.forBean(TestBean.class)
-                .with("stringField", "Hello World")
-                .build();
+@Test
+public void shouldSetStringField() {
+    MyBean bean = TestBuilder.forBean(MyBean.class)
+            .with("stringField", "Hello World")
+            .build();
 
-        assertThat(bean, hasProperty("stringField", is("Hello World")));
-    }
+    assertThat(bean, hasProperty("stringField", is("Hello World")));
+}
 ```
 
 #### Using getter methods on dynamic proxy
 ```
-public class TestBuilderAnnotationTest {
+@InjectProxy
+TestBean bean;
 
-    @InjectProxy
-    TestBean bean;
+@Before
+public void setUp() {
+    Builder4JAnnotations.initProxies(this);
+}
 
-    @Before
-    public void setUp() {
-        Builder4JAnnotations.initProxies(this);
-    }
+@Test
+public void shouldSetStringField() {
+    bean = TestBuilder.forBean(MyBean.class, bean)
+            .with(bean.getStringField(), "Hello World")
+            .build();
 
-    @Test
-    public void shouldSetStringField() {
-        bean = TestBuilder.forBean(TestBean.class, bean)
-                .with(bean.getStringField(), "Hello World")
-                .build();
-
-        assertThat(bean, hasProperty("stringField", is("Hello World")));
-    }
+    assertThat(bean, hasProperty("stringField", is("Hello World")));
 }
 ```
