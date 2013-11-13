@@ -95,9 +95,7 @@ public class TestBuilder<T> {
     public <F, V extends F> TestBuilder<T> with(F fieldValue, V value) {
         if (proxyHandler != null) {
             String fieldName = proxyHandler.getLastAccessedField();
-            if (!hasField(fieldName) && !hasAccessor(fieldName)) throw new NoFieldFoundException(fieldName);
-            values.put(fieldName, value);
-            return this;
+            return withField(fieldName, value);
         }
         throw new IllegalStateException("No ProxyHandler is registered for this builder");
     }
@@ -173,7 +171,9 @@ public class TestBuilder<T> {
                     return writeMethod;
                 }
             }
-        } catch (IntrospectionException e1) {}
-        return null;
+            return null;
+        } catch (IntrospectionException e1) {
+            return null;
+        }
     }
 }

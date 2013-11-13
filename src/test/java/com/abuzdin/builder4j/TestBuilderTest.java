@@ -131,6 +131,11 @@ public class TestBuilderTest {
         TestBuilder.forBean(TestBean.class).withField(null, "Hello World");
     }
 
+    @Test(expected = NullPointerException.class)
+    public void shouldThrowNullPointerExceptionForFieldNameNullWithProxy() {
+        TestBuilder.forBean(TestBean.class, proxy).with(null, "Hello World");
+    }
+
     @Test(expected = NoFieldFoundException.class)
     public void shouldThrowNoFieldFoundExceptionForNonExistingFieldName() {
         TestBuilder.forBean(TestBean.class).withField("nonExistingField", "Hello World");
@@ -141,9 +146,14 @@ public class TestBuilderTest {
         TestBuilder.forBean(TestBean.class, proxy).with(proxy.getNonExistingField(), 1);
     }
 
-    @Test(expected = NoFieldFoundException.class)
-    public void shouldThrowNoFieldFoundExceptionForNonGetterMethod() {
+    @Test(expected = NullPointerException.class)
+    public void shouldThrowNullPointerExceptionForNonGetterMethod() {
         TestBuilder.forBean(TestBean.class, proxy).with(proxy.nonGetterMethod(), 1);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void shouldThrowIllegalStateExceptionIfNoProxyRegistered() {
+        TestBuilder.forBean(TestBean.class).with(proxy.nonGetterMethod(), 1);
     }
 
     @Test

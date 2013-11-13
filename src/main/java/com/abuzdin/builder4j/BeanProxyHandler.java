@@ -28,7 +28,6 @@ public class BeanProxyHandler implements Answer {
         Object[] arguments = invocation.getArguments();
 
         if (isGetProxyHandler(method)) return this;
-        if (isGetLastAccessedField(method)) return getLastAccessedField();
         if (isGetMethod(method)) lastAccessedField = extractAccessedFieldName(method);
 
         return method.invoke(realObject, arguments);
@@ -42,11 +41,6 @@ public class BeanProxyHandler implements Answer {
     private boolean isGetMethod(Method method) {
         String name = method.getName();
         return name.startsWith("get") || name.startsWith("is");
-    }
-
-    private boolean isGetLastAccessedField(Method method) {
-        String name = method.getName();
-        return name.equals("getLastAccessedField");
     }
 
     private String extractAccessedFieldName(Method method) {
