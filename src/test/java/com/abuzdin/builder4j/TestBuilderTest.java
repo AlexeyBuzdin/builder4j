@@ -33,8 +33,8 @@ public class TestBuilderTest {
 
     @Test
     public void shouldSetStringField() {
-        bean = TestBuilder.forBean(TestBean.class, this.bean)
-                .with(this.bean.getStringField(), "Hello World")
+        bean = TestBuilder.forBean(TestBean.class, bean)
+                .with(bean.getStringField(), "Hello World")
                 .build();
 
         assertThat(bean, hasProperty("stringField", is("Hello World")));
@@ -42,9 +42,9 @@ public class TestBuilderTest {
 
     @Test
     public void shouldSetTwoFieldsInChain() {
-        bean = TestBuilder.forBean(TestBean.class, this.bean)
-                .with(this.bean.getStringField(), "Hello World")
-                .with(this.bean.getIntField(), 1)
+        bean = TestBuilder.forBean(TestBean.class, bean)
+                .with(bean.getStringField(), "Hello World")
+                .with(bean.getIntField(), 1)
                 .build();
 
         assertThat(bean, allOf(
@@ -64,7 +64,7 @@ public class TestBuilderTest {
     @Test
     public void shouldSetStringFieldWithoutProxy() {
         TestBean bean = TestBuilder.forBean(TestBean.class)
-                .with("stringField", "Hello World")
+                .withField("stringField", "Hello World")
                 .build();
 
         assertThat(bean, hasProperty("stringField", is("Hello World")));
@@ -73,8 +73,8 @@ public class TestBuilderTest {
     @Test
     public void shouldSetTwoFieldsInChainWithoutProxy() {
         TestBean bean = TestBuilder.forBean(TestBean.class)
-                .with("stringField", "Hello World")
-                .with("intField", 1)
+                .withField("stringField", "Hello World")
+                .withField("intField", 1)
                 .build();
 
         assertThat(bean, allOf(

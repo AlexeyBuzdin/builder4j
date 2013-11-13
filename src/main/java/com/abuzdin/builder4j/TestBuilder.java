@@ -52,7 +52,7 @@ public class TestBuilder<T> {
         }
     }
 
-    public TestBuilder<T> with(Object field, Object value) {
+    public <E, V extends E> TestBuilder<T> with(E field, V value) {
         String fieldName;
         if (proxyHandler != null) {
             fieldName = proxyHandler.getLastAccessedField();
@@ -60,6 +60,10 @@ public class TestBuilder<T> {
             fieldName = field.toString();
         }
 
+        return withField(fieldName, value);
+    }
+
+    public TestBuilder<T> withField(String fieldName, Object value) {
         values.put(fieldName, value);
         return this;
     }
