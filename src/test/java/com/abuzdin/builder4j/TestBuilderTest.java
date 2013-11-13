@@ -22,14 +22,6 @@ public class TestBuilderTest {
     }
 
     @Test
-    public void shouldHaveLastAccessedFieldNotEmptyInProxy() {
-        proxy.getIntField();
-        String lastAccessedField = ((HasLastAccessedField) proxy).getLastAccessedField();
-
-        assertThat(lastAccessedField, equalTo("intField"));
-    }
-
-    @Test
     public void shouldBuildNewInstance() {
         TestBean bean = TestBuilder.forBean(TestBean.class)
                 .build();
