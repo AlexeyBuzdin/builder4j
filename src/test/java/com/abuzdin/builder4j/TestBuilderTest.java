@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 public class TestBuilderTest {
 
     @InjectProxy
-    TestBean bean;
+    TestBean proxy;
 
     @InjectProxy
     ChildBean childBean;
@@ -26,7 +26,7 @@ public class TestBuilderTest {
 
     @Test
     public void shouldBuildNewInstance() {
-        bean = TestBuilder.forBean(TestBean.class)
+        TestBean bean = TestBuilder.forBean(TestBean.class)
                 .build();
 
         assertThat(bean, notNullValue());
@@ -34,8 +34,8 @@ public class TestBuilderTest {
 
     @Test
     public void shouldSetStringField() {
-        bean = TestBuilder.forBean(TestBean.class, bean)
-                .with(bean.getStringField(), "Hello World")
+        TestBean bean = TestBuilder.forBean(TestBean.class, proxy)
+                .with(proxy.getStringField(), "Hello World")
                 .build();
 
         assertThat(bean, hasProperty("stringField", is("Hello World")));
@@ -43,9 +43,9 @@ public class TestBuilderTest {
 
     @Test
     public void shouldSetTwoFieldsInChain() {
-        bean = TestBuilder.forBean(TestBean.class, bean)
-                .with(bean.getStringField(), "Hello World")
-                .with(bean.getIntField(), 1)
+        TestBean bean = TestBuilder.forBean(TestBean.class, proxy)
+                .with(proxy.getStringField(), "Hello World")
+                .with(proxy.getIntField(), 1)
                 .build();
 
         assertThat(bean, allOf(
@@ -86,8 +86,8 @@ public class TestBuilderTest {
 
     @Test
     public void shouldSetNestedFields() {
-        bean = TestBuilder.forBean(TestBean.class, bean)
-                .with(bean.getChildBean(), TestBuilder.forBean(ChildBean.class, childBean)
+        TestBean bean = TestBuilder.forBean(TestBean.class, proxy)
+                .with(proxy.getChildBean(), TestBuilder.forBean(ChildBean.class, childBean)
                         .with(childBean.getIntField(), 1)
                         .build())
                 .build();
@@ -126,8 +126,8 @@ public class TestBuilderTest {
         assertThat(proxy, is(notNullValue()));
     }
 
-    @Test(expected = NoFieldFoundException.class)
-    public void shouldThrowNoFieldFoundExceptionForFieldNameNull() {
+    @Test(expected = NullPointerException.class)
+    public void shouldThrowNullPointerExceptionForFieldNameNull() {
         TestBuilder.forBean(TestBean.class).withField(null, "Hello World");
     }
 
@@ -138,6 +138,20 @@ public class TestBuilderTest {
 
     @Test(expected = NoFieldFoundException.class)
     public void shouldThrowNoFieldFoundExceptionForNonExistingFieldNameGetter() {
-        TestBuilder.forBean(TestBean.class, bean).with(bean.getNonExistingField(), 1);
+        TestBuilder.forBean(TestBean.class, proxy).with(proxy.getNonExistingField(), 1);
+    }
+
+    @Test(expected = NoFieldFoundException.class)
+    public void shouldThrowNoFieldFoundExceptionForNonGetterMethod() {
+        TestBuilder.forBean(TestBean.class, proxy).with(proxy.nonGetterMethod(), 1);
+    }
+
+    @Test
+    public void shouldSetFieldIfUsingAlias() {
+        TestBean bean = TestBuilder.forBean(TestBean.class, proxy)
+                .with(proxy.getFieldWithOtherName(), 1)
+                .build();
+
+        assertThat(bean.getFieldWithOtherName(), is(1));
     }
 }

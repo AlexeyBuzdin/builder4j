@@ -35,6 +35,18 @@ public class TestBeans {
         public int getNonExistingField(){
             return  1;
         }
+
+        public int nonGetterMethod(){
+            return  1;
+        }
+
+        public int getFieldWithOtherName(){
+            return  intField;
+        }
+
+        public void setFieldWithOtherName(int i){
+            intField = i;
+        }
     }
 
     public static class ChildBean {

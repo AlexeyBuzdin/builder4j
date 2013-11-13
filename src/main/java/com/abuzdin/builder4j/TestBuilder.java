@@ -1,6 +1,11 @@
 package com.abuzdin.builder4j;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,7 +95,7 @@ public class TestBuilder<T> {
     public <F, V extends F> TestBuilder<T> with(F fieldValue, V value) {
         if (proxyHandler != null) {
             String fieldName = proxyHandler.getLastAccessedField();
-            if (!hasField(fieldName)) throw new NoFieldFoundException(fieldName);
+            if (!hasField(fieldName) && !hasAccessor(fieldName)) throw new NoFieldFoundException(fieldName);
             values.put(fieldName, value);
             return this;
         }
@@ -103,7 +108,9 @@ public class TestBuilder<T> {
      * @return           builder instance {@code this}
      */
     public TestBuilder<T> withField(String fieldName, Object value) {
-        if (!hasField(fieldName)) throw new NoFieldFoundException(fieldName);
+        if (fieldName == null) throw new NullPointerException("FieldName should not be null");
+        if (!hasField(fieldName) && !hasAccessor(fieldName)) throw new NoFieldFoundException(fieldName);
+
         values.put(fieldName, value);
         return this;
     }
@@ -123,13 +130,19 @@ public class TestBuilder<T> {
 
     private void setValues(Object o) {
         for (Map.Entry<String, Object> entry : values.entrySet()) {
+            String fieldName = entry.getKey();
+            Object value = entry.getValue();
             try {
-                String fieldName = entry.getKey();
-                Field field = o.getClass().getDeclaredField(fieldName);
-                field.setAccessible(true);
-                field.set(o, entry.getValue());
+                if (hasAccessor(fieldName)) {
+                    Method setter = getSetter(fieldName);
+                    setter.invoke(o, value);
+                } else if (hasField(fieldName)){
+                    Field field = o.getClass().getDeclaredField(fieldName);
+                    field.setAccessible(true);
+                    field.set(o, value);
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new NoFieldFoundException(fieldName);
             }
         }
     }
@@ -141,5 +154,26 @@ public class TestBuilder<T> {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private boolean hasAccessor(String fieldName) {
+        if (fieldName == null) return false;
+
+        Method setter = getSetter(fieldName);
+        return setter != null;
+    }
+
+    private Method getSetter(String fieldName) {
+        try {
+            BeanInfo info = Introspector.getBeanInfo(clazz);
+            PropertyDescriptor[] props = info.getPropertyDescriptors();
+            for (PropertyDescriptor pd : props) {
+                Method writeMethod = pd.getWriteMethod();
+                if(writeMethod != null && writeMethod.getName().toLowerCase().contains(fieldName.toLowerCase())) {
+                    return writeMethod;
+                }
+            }
+        } catch (IntrospectionException e1) {}
+        return null;
     }
 }
