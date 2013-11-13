@@ -30,7 +30,7 @@ public class TestBuilder<T> {
 
             return mock(clazz, withSettings()
                     .defaultAnswer(answer)
-                    .extraInterfaces(HasProxyHandler.class)
+                    .extraInterfaces(HasProxyHandler.class, HasLastAccessedField.class)
             );
         } catch (Exception e) {
             throw new RuntimeException(e);

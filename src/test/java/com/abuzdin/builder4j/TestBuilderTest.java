@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import static com.abuzdin.builder4j.Builder4JAnnotations.InjectProxy;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
@@ -18,6 +19,14 @@ public class TestBuilderTest {
     @Before
     public void setUp() {
         Builder4JAnnotations.initProxies(this);
+    }
+
+    @Test
+    public void shouldHaveLastAccessedFieldNotEmptyInProxy() {
+        proxy.getIntField();
+        String lastAccessedField = ((HasLastAccessedField) proxy).getLastAccessedField();
+
+        assertThat(lastAccessedField, equalTo("intField"));
     }
 
     @Test
