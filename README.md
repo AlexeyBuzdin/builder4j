@@ -9,7 +9,7 @@ Builder4J enchants your test with generic reflective builders.
 @Test
 public void shouldSetStringField() {
     MyBean bean = TestBuilder.forBean(MyBean.class)
-            .with("stringField", "Hello World")
+            .withField("stringField", "Hello World")
             .build();
 
     assertThat(bean, hasProperty("stringField", is("Hello World")));
