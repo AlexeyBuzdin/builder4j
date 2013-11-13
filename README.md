@@ -2,7 +2,7 @@ builder4j
 =========
 
 Tired of writing and maintaining builders for your Java Beans? Look no further! 
-Builder4J enchants your test with generic reflective builders. 
+Builder4J enchants your tests with reflective generic builders. 
 
 #### Creating beans using field names
 ```
