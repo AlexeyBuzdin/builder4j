@@ -4,6 +4,7 @@ public class TestBean {
 
     private String stringField;
     private int intField;
+    private ChildBean childBean;
 
     public String getStringField() {
         return stringField;
@@ -19,5 +20,13 @@ public class TestBean {
 
     public void setIntField(int intField) {
         this.intField = intField;
+    }
+
+    public ChildBean getChildBean() {
+        return childBean;
+    }
+
+    public void setChildBean(ChildBean childBean) {
+        this.childBean = childBean;
     }
 }
