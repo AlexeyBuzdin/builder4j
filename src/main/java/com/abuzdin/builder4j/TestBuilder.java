@@ -13,17 +13,33 @@ public class TestBuilder<T> {
     private BeanProxyHandler proxyHandler;
     private Map<String, Object> values = new HashMap<String, Object>();
 
+    /**
+     * @param clazz  class that you create builder for
+     * @param <T>    type of instance built by builder
+     * @return       new instance of builder for {@code clazz}
+     */
     public static <T> TestBuilder<T> forBean(Class<T> clazz) {
         return new TestBuilder<T>(clazz);
     }
 
+    /**
+     * @param clazz  class that you create builder for
+     * @param proxy  dynamic proxy of {@code clazz} to register for new builder
+     * @param <T>    type of instance built by builder
+     * @return       new instance of builder for {@code clazz}
+     */
     public static <T> TestBuilder<T> forBean(Class<T> clazz, T proxy) {
         TestBuilder<T> builder = forBean(clazz);
-        builder.register(proxy);
+        builder.registerProxy(proxy);
         return builder;
     }
 
-    public static <T> T proxyBean(Class<T> clazz) {
+    /**
+     * @param clazz  class of newly created dynamic proxy
+     * @param <T>    type of dynamic proxy to create
+     * @return       new dynamic proxy for {@code clazz} that implements {@link HasProxyHandler}
+     */
+    public static <T> T createProxy(Class<T> clazz) {
         try {
             T instance = clazz.newInstance();
             BeanProxyHandler answer = new BeanProxyHandler(instance);
@@ -41,6 +57,9 @@ public class TestBuilder<T> {
         this.clazz = clazz;
     }
 
+    /**
+     * @return newly created object of type {@code <T>} with registered values set to fields
+     */
     public T build() {
         try {
             T instance = clazz.newInstance();
@@ -52,26 +71,45 @@ public class TestBuilder<T> {
         }
     }
 
-    public <E, V extends E> TestBuilder<T> with(E field, V value) {
-        String fieldName;
+    /**
+     * Should only be used with proxyHandler registered for the instance
+     *
+     * @param fieldValue  field value of dynamic proxy. Used only fot generic type inference
+     * @param value       value to be registered for the field
+     * @param <F>         type of the registered field
+     * @param <V>         type of the registered value
+     * @return            builder instance {@code this}
+     */
+    public <F, V extends F> TestBuilder<T> with(F fieldValue, V value) {
         if (proxyHandler != null) {
-            fieldName = proxyHandler.getLastAccessedField();
-        } else {
-            fieldName = field.toString();
+            String fieldName = proxyHandler.getLastAccessedField();
+            values.put(fieldName, value);
+            return this;
         }
-
-        return withField(fieldName, value);
+        throw new IllegalStateException("No ProxyHandler is registered for this builder");
     }
 
+    /**
+     * @param fieldName  field name to be registered
+     * @param value      value to be registered for the field
+     * @return           builder instance {@code this}
+     */
     public TestBuilder<T> withField(String fieldName, Object value) {
         values.put(fieldName, value);
         return this;
     }
 
-    public TestBuilder<T> register(T proxy) {
-        HasProxyHandler hasProxyHandler = (HasProxyHandler) proxy;
-        this.proxyHandler = hasProxyHandler.getProxyHandler();
-        return this;
+    /**
+     * @param proxy      dynamic proxy for {@code <T>} that implements {@link HasProxyHandler}
+     * @return           builder instance {@code this}
+     */
+    public TestBuilder<T> registerProxy(T proxy) {
+        if(proxy instanceof HasProxyHandler) {
+            HasProxyHandler hasProxyHandler = (HasProxyHandler) proxy;
+            this.proxyHandler = hasProxyHandler.getProxyHandler();
+            return this;
+        }
+        throw new IllegalArgumentException("Object should implement HasProxyHandler and be not null");
     }
 
     private void setValues(Object o) {

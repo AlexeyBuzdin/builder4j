@@ -20,7 +20,7 @@ public class Builder4JAnnotations {
             try {
                 if (field.isAnnotationPresent(InjectProxy.class)) {
                     Class<?> fieldClass = field.getType();
-                    Object proxy = TestBuilder.proxyBean(fieldClass);
+                    Object proxy = TestBuilder.createProxy(fieldClass);
                     field.setAccessible(true);
                     field.set(testClass, proxy);
                 }

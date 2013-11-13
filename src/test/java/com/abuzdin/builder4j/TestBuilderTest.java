@@ -93,4 +93,14 @@ public class TestBuilderTest {
 
         assertThat(bean, hasProperty("childBean", hasProperty("intField", is(1))));
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionForNullProxy() {
+        TestBuilder.forBean(TestBean.class, null).build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionForProxyNotImplementingHasProxyHandler() {
+        TestBuilder.forBean(TestBean.class, new TestBean()).build();
+    }
 }

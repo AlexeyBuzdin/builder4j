@@ -17,8 +17,13 @@ public class BeanProxyHandler implements Answer {
         realObject=real;
     }
 
+    /**
+     * @param invocation of mock method
+     * @return           value of the real object, or mocked data
+     * @throws Exception if method of real object fails to execute
+     */
     @Override
-    public Object answer(InvocationOnMock invocation) throws Throwable {
+    public Object answer(InvocationOnMock invocation) throws Exception {
         Method method = invocation.getMethod();
         Object[] arguments = invocation.getArguments();
 
