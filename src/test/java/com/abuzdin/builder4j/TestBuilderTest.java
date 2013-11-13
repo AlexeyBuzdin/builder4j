@@ -1,7 +1,9 @@
 package com.abuzdin.builder4j;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import static com.abuzdin.builder4j.Builder4JAnnotations.InjectProxy;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,6 +11,14 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 
 public class TestBuilderTest {
+
+    @InjectProxy
+    TestBean proxy;
+
+    @Before
+    public void setUp() {
+        Builder4JAnnotations.initProxies(this);
+    }
 
     @Test
     public void shouldBuildNewInstance() {
@@ -20,7 +30,6 @@ public class TestBuilderTest {
 
     @Test
     public void shouldSetStringFieldWithSetter() {
-        TestBean proxy = TestBuilder.proxyBean(TestBean.class);
         TestBean bean = TestBuilder.forBean(TestBean.class, proxy)
                 .with(proxy.getStringField(), "Hello World")
                 .build();
@@ -30,7 +39,6 @@ public class TestBuilderTest {
 
     @Test
     public void shouldSetTwoFieldsInChain() {
-        TestBean proxy = TestBuilder.proxyBean(TestBean.class);
         TestBean bean = TestBuilder.forBean(TestBean.class, proxy)
                 .with(proxy.getStringField(), "Hello World")
                 .with(proxy.getIntField(), 1)

@@ -1,7 +1,6 @@
 package com.abuzdin.builder4j;
 
-import org.apache.commons.beanutils.BeanUtils;
-
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +73,10 @@ public class TestBuilder<T> {
     private void setValues(Object o) {
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             try {
-                BeanUtils.setProperty(o, entry.getKey(), entry.getValue());
+                String fieldName = entry.getKey();
+                Field field = o.getClass().getDeclaredField(fieldName);
+                field.setAccessible(true);
+                field.set(o, entry.getValue());
             } catch (Exception e) {
                 e.printStackTrace();
             }
