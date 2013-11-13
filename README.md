@@ -7,7 +7,7 @@ Builder4J enchants your test with generic reflective builders.
 ##### Two ways of creating beans with builder4j
 
 #### Using field names
-<code>
+```
     @Test
     public void shouldSetStringFieldWithSetter() {
         TestBean bean = TestBuilder.forBean(TestBean.class)
@@ -16,10 +16,10 @@ Builder4J enchants your test with generic reflective builders.
 
         assertThat(bean, hasProperty("stringField", is("Hello World")));
     }
-</code>
+```
 
 #### Using getter methods on dynamic proxy
-<code>
+```
 public class TestBuilderAnnotationTest {
 
     @InjectProxy
@@ -39,4 +39,4 @@ public class TestBuilderAnnotationTest {
         assertThat(bean, hasProperty("stringField", is("Hello World")));
     }
 }
-</code>
+```
