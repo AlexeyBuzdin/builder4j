@@ -14,7 +14,7 @@ public class BeanProxyHandler implements Answer {
     private Object realObject;
 
     public BeanProxyHandler(Object real) {
-        realObject=real;
+        realObject = real;
     }
 
     /**

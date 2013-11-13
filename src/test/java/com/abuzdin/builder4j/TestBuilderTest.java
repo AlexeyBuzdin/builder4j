@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.abuzdin.builder4j.Builder4JAnnotations.InjectProxy;
+import static com.abuzdin.builder4j.TestBeans.*;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -102,5 +103,26 @@ public class TestBuilderTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentExceptionForProxyNotImplementingHasProxyHandler() {
         TestBuilder.forBean(TestBean.class, new TestBean()).build();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldFailToConstructBuilderForNull() {
+        TestBuilder.forBean(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldFailToConstructProxyForNullAsClass() {
+        TestBuilder.createProxy(null);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldFailToConstructProxyForClassWithNoDefaultConstructor() {
+        TestBuilder.createProxy(NoDefaultConstructorBean.class);
+    }
+
+    @Test
+    public void shouldConstructProxyForClassWithMultipleConstructors() {
+        MultipleConstructorBean proxy = TestBuilder.createProxy(MultipleConstructorBean.class);
+        assertThat(proxy, is(notNullValue()));
     }
 }

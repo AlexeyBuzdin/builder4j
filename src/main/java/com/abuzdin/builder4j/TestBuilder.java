@@ -35,11 +35,13 @@ public class TestBuilder<T> {
     }
 
     /**
-     * @param clazz  class of newly created dynamic proxy
+     * @param clazz  class dynamic proxy should extend
      * @param <T>    type of dynamic proxy to create
      * @return       new dynamic proxy for {@code clazz} that implements {@link HasProxyHandler}
      */
     public static <T> T createProxy(Class<T> clazz) {
+        if(clazz == null) throw new NullPointerException("Class for proxy should not be null");
+
         try {
             T instance = clazz.newInstance();
             BeanProxyHandler answer = new BeanProxyHandler(instance);
@@ -49,11 +51,13 @@ public class TestBuilder<T> {
                     .extraInterfaces(HasProxyHandler.class)
             );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to construct new instance of " + clazz.getName(), e);
         }
     }
 
     private TestBuilder(Class<T> clazz) {
+        if (clazz == null) throw new NullPointerException();
+
         this.clazz = clazz;
     }
 
@@ -66,7 +70,10 @@ public class TestBuilder<T> {
             setValues(instance);
 
             return instance;
-        } catch (Exception e){
+        } catch (Exception e) {
+            if (e instanceof InstantiationException || e instanceof IllegalAccessException) {
+                throw new RuntimeException("Failed to construct new instance of " + clazz.getName(), e);
+            }
             throw new RuntimeException(e);
         }
     }
