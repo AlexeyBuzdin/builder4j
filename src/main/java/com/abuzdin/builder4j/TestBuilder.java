@@ -90,6 +90,7 @@ public class TestBuilder<T> {
     public <F, V extends F> TestBuilder<T> with(F fieldValue, V value) {
         if (proxyHandler != null) {
             String fieldName = proxyHandler.getLastAccessedField();
+            if (!hasField(fieldName)) throw new NoFieldFoundException(fieldName);
             values.put(fieldName, value);
             return this;
         }
@@ -102,6 +103,7 @@ public class TestBuilder<T> {
      * @return           builder instance {@code this}
      */
     public TestBuilder<T> withField(String fieldName, Object value) {
+        if (!hasField(fieldName)) throw new NoFieldFoundException(fieldName);
         values.put(fieldName, value);
         return this;
     }
@@ -116,7 +118,7 @@ public class TestBuilder<T> {
             this.proxyHandler = hasProxyHandler.getProxyHandler();
             return this;
         }
-        throw new IllegalArgumentException("Object should implement HasProxyHandler and be not null");
+        throw new IllegalArgumentException("Parameter should implement HasProxyHandler and be not null");
     }
 
     private void setValues(Object o) {
@@ -129,6 +131,15 @@ public class TestBuilder<T> {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private boolean hasField(String fieldName) {
+        try {
+            clazz.getDeclaredField(fieldName);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

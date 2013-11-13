@@ -125,4 +125,19 @@ public class TestBuilderTest {
         MultipleConstructorBean proxy = TestBuilder.createProxy(MultipleConstructorBean.class);
         assertThat(proxy, is(notNullValue()));
     }
+
+    @Test(expected = NoFieldFoundException.class)
+    public void shouldThrowNoFieldFoundExceptionForFieldNameNull() {
+        TestBuilder.forBean(TestBean.class).withField(null, "Hello World");
+    }
+
+    @Test(expected = NoFieldFoundException.class)
+    public void shouldThrowNoFieldFoundExceptionForNonExistingFieldName() {
+        TestBuilder.forBean(TestBean.class).withField("nonExistingField", "Hello World");
+    }
+
+    @Test(expected = NoFieldFoundException.class)
+    public void shouldThrowNoFieldFoundExceptionForNonExistingFieldNameGetter() {
+        TestBuilder.forBean(TestBean.class, bean).with(bean.getNonExistingField(), 1);
+    }
 }

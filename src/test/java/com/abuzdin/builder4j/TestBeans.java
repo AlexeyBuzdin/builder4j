@@ -31,6 +31,10 @@ public class TestBeans {
         public void setChildBean(ChildBean childBean) {
             this.childBean = childBean;
         }
+
+        public int getNonExistingField(){
+            return  1;
+        }
     }
 
     public static class ChildBean {
