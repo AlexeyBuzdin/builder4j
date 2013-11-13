@@ -4,9 +4,7 @@ builder4j
 Tired of writing and maintaining builders for your Java Beans? Look no further! 
 Builder4J enchants your test with generic reflective builders. 
 
-##### Two ways of creating beans with builder4j
-
-#### Using field names
+#### Creating beans using field names
 ```
 @Test
 public void shouldSetStringField() {
@@ -18,7 +16,7 @@ public void shouldSetStringField() {
 }
 ```
 
-#### Using getter methods on dynamic proxy
+#### Creating beans using getter methods on dynamic proxy
 ```
 @InjectProxy
 TestBean bean;
