@@ -15,6 +15,7 @@ bin/
 gen/
 target/
 .gradle/
+build/
 
 # Project files
 .idea/

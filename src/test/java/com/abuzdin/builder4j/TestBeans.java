@@ -2,17 +2,17 @@ package com.abuzdin.builder4j;
 
 public class TestBeans {
 
-    public static class TestBean {
+    public static class Person {
 
         private String stringField;
         private int intField;
-        private ChildBean childBean;
+        private Child child;
 
         public String getStringField() {
             return stringField;
         }
 
-        public void setStringField(String stringField) {
+        public void setFirstName(String stringField) {
             this.stringField = stringField;
         }
 
@@ -24,12 +24,12 @@ public class TestBeans {
             this.intField = intField;
         }
 
-        public ChildBean getChildBean() {
-            return childBean;
+        public Child getChild() {
+            return child;
         }
 
-        public void setChildBean(ChildBean childBean) {
-            this.childBean = childBean;
+        public void setChild(Child child) {
+            this.child = child;
         }
 
         public int getNonExistingField(){
@@ -49,7 +49,7 @@ public class TestBeans {
         }
     }
 
-    public static class ChildBean {
+    public static class Child {
 
         private int intField;
 
@@ -57,7 +57,7 @@ public class TestBeans {
             return intField;
         }
 
-        public void setIntField(int intField) {
+        public void setAge(int intField) {
             this.intField = intField;
         }
     }
