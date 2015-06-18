@@ -1,6 +1,3 @@
-# Binary files
-*.class
-
 # Packages
 *.jar
 *.ear
@@ -23,5 +20,5 @@ build/
 .project
 .classpath
 
-# Misc
-.DS_Store
+# Local Gradle Properties
+gradle.properties
