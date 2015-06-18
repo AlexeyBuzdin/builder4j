@@ -1,37 +1,16 @@
 builder4j
 =========
 
-Tired of writing and maintaining builders for your Java Beans? Look no further! 
-Builder4J enchants your tests with reflective generic builders. 
+Tired of writing, generating and maintaining builders for your Java Beans? Look no further!
+Builder4J enchants your tests with a generic builder API.
 
-#### Creating beans using field names
+### Usage
 ```
-@Test
-public void shouldSetStringField() {
-    MyBean bean = TestBuilder.forBean(MyBean.class)
-            .withField("stringField", "Hello World")
-            .build();
-
-    assertThat(bean, hasProperty("stringField", is("Hello World")));
-}
-```
-
-#### Creating beans using getter methods on dynamic proxy
-```
-@InjectProxy
-MyBean proxy;
-
-@Before
-public void setUp() {
-    Builder4JAnnotations.initProxies(this);
-}
-
-@Test
-public void shouldSetStringField() {
-    MyBean bean = TestBuilder.forBean(MyBean.class, proxy)
-            .with(proxy.getStringField(), "Hello World")
-            .build();
-
-    assertThat(bean, hasProperty("stringField", is("Hello World")));
-}
+Person person = TestBuilder.forBean(Person::new)
+                .with(Person::setFirstName, "Hello")
+                .with(Person::setChild,
+                        TestBuilder.forBean(Child::new)
+                                .with(Child::setAge, 1)
+                                .build()
+                ).build();
 ```

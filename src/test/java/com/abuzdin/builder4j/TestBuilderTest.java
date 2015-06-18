@@ -1,8 +1,10 @@
 package com.abuzdin.builder4j;
 
+import me.buzdin.builder4j.TestBuilder;
 import org.junit.Test;
 
-import static com.abuzdin.builder4j.TestBeans.*;
+import static com.abuzdin.builder4j.TestBeans.Child;
+import static com.abuzdin.builder4j.TestBeans.Person;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 

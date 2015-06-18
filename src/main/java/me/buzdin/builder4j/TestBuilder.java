@@ -1,6 +1,5 @@
-package com.abuzdin.builder4j;
+package me.buzdin.builder4j;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;

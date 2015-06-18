@@ -1,4 +1,4 @@
-package com.abuzdin.builder4j;
+package me.buzdin.builder4j;
 
 public class NoFieldFoundException extends RuntimeException {
 

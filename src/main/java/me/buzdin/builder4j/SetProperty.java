@@ -1,4 +1,4 @@
-package com.abuzdin.builder4j;
+package me.buzdin.builder4j;
 
 @FunctionalInterface
 public interface SetProperty<Instance, ParamType> {
